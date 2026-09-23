@@ -52,7 +52,7 @@ TE-Universe/
 │   └── clips.js                 # Firestore klip modülü ve bellek temizleyici
 │   └── skin-viewer.js           # Minecraft skinleri gösterimi
 │   └── video-galery.js          # Yayıncıların video sergisi gösterimi
-├── config.json                  # Açık kaynak yapılandırma şablonu
+├── config.example.json          # Açık kaynak yapılandırma şablonu
 ├── index.html                   # Ana HTML şablonu
 ├── README.md                    # Proje Tanıtımı
 ├── LICENSE                      # Lisans bilgileri
