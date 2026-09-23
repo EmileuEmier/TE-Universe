@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Yusufte Universe - Yusufte ekibi çok yayıncılı hayran portalı. Skin görüntüleyici, topluluk klipleri paylaşım ve video sergisi.">
+  <title>TE Universe</title>
+  <link rel="icon" id="site-favicon" type="image/png" href="https://yt3.ggpht.com/QUrghdcxQ7ocKdyeTEVRb-dkUcOuYY8Ny0GQo5dHlMJuvTSl-SAOyPkisS6b7qvftMzUPznu=s240-c-k-c0x00ffffff-no-rj">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+
+  <script src="https://unpkg.com/skinview3d@3.0.1/bundles/skinview3d.bundle.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+</head>
+<body class="bg-deep min-h-screen antialiased">
+
+  <!-- ================= NAVBAR ================= -->
+  <header id="navbar" class="fixed top-0 left-0 right-0 z-50 glass border-b border-white/10">
+    <nav class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <!-- Marka + yayıncı dropdown menüsü -->
+      <div id="creator-dropdown-wrap" class="relative flex items-center">
+        <button type="button" id="brand-home" class="flex items-center gap-3 group brand-btn" aria-label="Yayıncı seç" aria-haspopup="listbox" aria-expanded="false">
+          <span class="w-10 h-10 aspect-square grid place-items-center text-2xl pixel-card bg-peach text-deep overflow-hidden rounded-full">
+            <img id="nav-brand-avatar" class="w-full h-full aspect-square object-cover rounded-full hidden" alt="">
+            <i id="nav-brand-icon" class="fa-solid fa-pepper-hot"></i>
+            <span id="nav-brand-tag" class="hidden font-pixel text-xs text-deep">TE</span>
+          </span>
+          <span class="flex items-center gap-2">
+            <span id="nav-brand" class="font-pixel text-sm text-white tracking-widest group-hover:text-peach transition-colors hidden md:inline">Yusufte Universe</span>
+            <i id="brand-caret" class="fa-solid fa-chevron-down text-xs text-white/50 brand-caret hidden md:inline"></i>
+          </span>
+        </button>
+
+        <!-- Özel yayıncı dropdown menüsü -->
+        <div id="creator-dropdown" class="creator-dropdown hidden" role="listbox" aria-label="Yayıncı profilleri">
+          <div class="creator-dropdown-head">
+            <i class="fa-solid fa-users mr-2"></i>Yayıncı Seç
+          </div>
+          <div id="creator-list" class="creator-list">
+            <!-- JS ile doldurulur -->
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1 sm:gap-2">
+        <button type="button" data-view="home" class="nav-link-text nav-view-btn active" aria-current="page">
+          <i class="fa-solid fa-house mr-1.5"></i><span class="nav-view-label">Ana Sayfa</span>
+        </button>
+        <button type="button" data-view="clips" class="nav-link-text nav-view-btn">
+          <i class="fa-solid fa-scissors mr-1.5"></i><span class="nav-view-label">Klipler</span>
+        </button>
+        <button type="button" data-view="videos" class="nav-link-text nav-view-btn">
+          <i class="fa-solid fa-clapperboard mr-1.5"></i><span class="nav-view-label">Videolar</span>
+        </button>
+      </div>
+
+      <div id="nav-channels" class="flex items-center gap-1.5 sm:gap-2">
+        <!-- aktif yayıncının kanal butonları JS ile üretilir -->
+      </div>
+    </nav>
+  </header>
+
+  <!-- ================= GÖRÜNÜM 1: ANA SAYFA (HERO + SKIN) ================= -->
+  <main id="view-home" class="view">
+
+  <!-- ================= HERO ================= -->
+  <section id="top" class="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-16">
+    <div class="absolute inset-0 grid-bg opacity-40"></div>
+    <div id="hero-glow-1" class="absolute -top-32 -left-32 w-96 h-96 hero-glow rounded-full blur-[120px]"></div>
+    <div id="hero-glow-2" class="absolute -bottom-32 -right-32 w-96 h-96 hero-glow-2 rounded-full blur-[120px]"></div>
+
+    <div class="relative z-10 text-center px-4 max-w-4xl">
+      <div class="inline-block mb-6 px-4 py-2 pixel-card text-xs font-pixel text-peach uppercase tracking-widest">
+        <i class="fa-solid fa-star mr-2 animate-pulse"></i><span id="hero-badge">Hayran Portalı</span>
+      </div>
+
+      <h1 class="font-pixel text-4xl sm:text-6xl md:text-7xl text-white title-glow leading-tight">
+        <span id="hero-title-main">YUSUFTE</span><br>
+        <span id="hero-title-sub" class="text-peach">UNIVERSE</span>
+      </h1>
+
+      <p id="hero-subtitle" class="mt-6 text-white/70 text-base sm:text-lg font-medium max-w-2xl mx-auto">
+        Yusufte Ekibi Çok Yayıncılı Hayran Portalı
+      </p>
+
+      <div id="hero-channels" class="mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+        <!-- aktif yayıncının kanal butonları JS ile üretilir -->
+      </div>
+
+      <div id="hero-socials" class="mt-10 flex items-center justify-center gap-3 text-white/50">
+        <!-- aktif yayıncının sosyal medya ikonları (creators.*.socials) JS ile üretilir -->
+      </div>
+
+      <div class="mt-12 text-white/30 text-2xl animate-bounce-down">
+        <i class="fa-solid fa-angles-down"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SKIN VIEWER ================= -->
+  <section id="skin-section" class="py-20 px-4 sm:px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="section-header">
+        <h2 class="font-pixel text-2xl sm:text-3xl text-white"><span class="text-peach">01</span> Skin Görüntüleyici</h2>
+        <p class="text-white/50 mt-3"><span id="skin-creator-name">Yayıncının</span> Minecraft karakteri — sürükle-döndür, yürüme animasyonunu izle.</p>
+      </div>
+
+      <div id="skin-card" class="mt-10 glass rounded-2xl p-4 sm:p-6 border border-white/10">
+        <div class="grid lg:grid-cols-2 gap-6 items-center">
+          <div class="relative flex items-center justify-center">
+            <div class="relative w-full max-w-md aspect-square grid place-items-center viewer-stage rounded-xl overflow-hidden">
+              <canvas id="skin-canvas" class="w-full h-full block"></canvas>
+            </div>
+          </div>
+
+          <div class="text-center lg:text-left">
+            <h3 id="skin-card-title" class="font-pixel text-white text-lg mb-2">Yayıncı Karakteri</h3>
+            <p class="text-white/60 text-sm leading-relaxed mb-6">
+              `config.json` içindeki <code class="code-chip">creators.*.skinUrl</code> yolundan okunan
+              skin dokusu otomatik olarak 3 boyutlu modele dönüştürülür.
+            </p>
+
+            <div class="flex flex-wrap justify-center lg:justify-start gap-3">
+              <button id="btn-walk" class="btn-control">
+                <i class="fa-solid fa-person-walking mr-2"></i><span class="btn-label">Yürüme: Açık</span>
+              </button>
+            </div>
+
+            <p id="skin-status" class="mt-5 text-xs text-peach/80 font-mono">
+              <i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Skin yükleniyor...
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- ================= GÖRÜNÜM 2: TOPLULUK KLİPLERİ ================= -->
+  <div id="view-clips" class="view hidden bg-[#0d0d11] border-y border-white/5">
+  <!-- ================= TOPLULUK KLİPLERİ ================= -->
+  <section id="clips-section" class="py-20 px-4 sm:px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="section-header">
+        <h2 class="font-pixel text-2xl sm:text-3xl text-white"><span class="text-peach">02</span> Topluluk Klipleri</h2>
+        <p class="text-white/50 mt-3">İkonik anları kes, paylaş, beğen ve izle.</p>
+      </div>
+
+      <div id="clips-config-warning" class="clip-warning mt-8 max-w-2xl mx-auto text-center hidden">
+        <i class="fa-solid fa-triangle-exclamation mr-1.5 text-peach"></i>Firebase yapılandırması bulunamadı.
+      </div>
+
+      <div class="mt-8 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3">
+        <div class="clip-search-wrap">
+          <i class="fa-solid fa-magnifying-glass clip-search-icon"></i>
+          <input id="clip-search-input" type="search" class="clip-search"
+            placeholder="Kliplerde ara (başlık, kullanıcı, video)...">
+        </div>
+        <select id="clip-sort-select" class="clip-sort" aria-label="Sıralama">
+          <option value="newest">En Yeni</option>
+          <option value="likes">En Çok Beğenilen</option>
+          <option value="views">En Çok İzlenen</option>
+          <option value="oldest">En Eski</option>
+        </select>
+      </div>
+
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+        <button id="clip-create-btn" class="btn-primary">
+          <i class="fa-solid fa-scissors mr-2"></i>Klip Oluştur
+        </button>
+        <div id="clips-tabs" class="flex flex-wrap justify-center gap-2 sm:gap-3">
+          <!-- klip sekmeleri (Tüm Klipler / Kendi Kliplerim) JS ile üretilir -->
+        </div>
+      </div>
+
+      <div id="clips-grid" class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- klip kartları JS ile üretilir -->
+      </div>
+      <div id="clips-status" class="mt-4 text-center text-xs text-white/40 font-mono"></div>
+    </div>
+  </section>
+  </div>
+
+  <!-- ================= GÖRÜNÜM 3: VİDEO SERGİSİ ================= -->
+  <div id="view-videos" class="view hidden">
+  <!-- ================= VIDEO GALLERY ================= -->
+  <section id="video-section" class="py-20 px-4 sm:px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="section-header">
+        <h2 class="font-pixel text-2xl sm:text-3xl text-white"><span class="text-peach">03</span> Video Sergisi</h2>
+        <p class="text-white/50 mt-3">Kanala ya da kategoriye göre filtrele, tek tıkla izle.</p>
+      </div>
+
+      <div class="mt-8 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3">
+        <div class="clip-search-wrap">
+          <i class="fa-solid fa-magnifying-glass clip-search-icon"></i>
+          <input id="video-search-input" type="search" class="clip-search"
+            placeholder="Videolarda ara (başlık, kanal)...">
+        </div>
+        <select id="video-sort-select" class="clip-sort" aria-label="Sıralama">
+          <option value="newest">En Yeni</option>
+          <option value="views">En Çok İzlenen</option>
+          <option value="likes">En Çok Beğenilen</option>
+          <option value="oldest">En Eski</option>
+        </select>
+      </div>
+
+      <div id="video-tabs" class="mt-6 flex flex-wrap justify-center gap-2 sm:gap-3">
+        <!-- filtre sekmeleri JS ile üretilir -->
+      </div>
+
+      <div id="video-grid" class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- video kartları JS ile üretilir -->
+      </div>
+
+      <div id="video-more" class="mt-8 text-center"></div>
+      <div id="video-status" class="mt-4 text-center text-xs text-white/40 font-mono"></div>
+    </div>
+  </section>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="py-12 px-4 text-center border-t border-white/5 bg-[#0d0d11]">
+    <p class="font-pixel text-xs text-white/40 tracking-widest"><span id="footer-brand">YUSUFTE</span> UNIVERSE</p>
+
+    <!-- Telif ve Geliştirici Bilgisi -->
+    <p class="mt-3 text-xs text-white/60 font-medium">
+      Tasarım &amp; Kodlama: <span class="text-peach">Emir Aytekin</span> &copy; <span id="footer-year"></span> Tüm hakları saklıdır.
+    </p>
+
+    <!-- Fan Portalı Yasal Sorumluluk Reddi (Disclaimer) -->
+    <p class="mt-2 text-xs text-white/30">
+      Bağımsız hayran portalıdır — tüm video ve marka hakları ilgili içerik üreticilerine aittir.
+    </p>
+    <p class="mt-2 text-xs text-white/30">
+      İletişim: emiraytekin61@gmail.com
+    </p>
+  </footer>
+
+  <!-- ================= VIDEO MODAL ================= -->
+  <div id="video-modal" class="video-modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="video-modal-backdrop" data-close-modal></div>
+    <div class="video-modal-box">
+      <div class="flex items-center justify-between gap-4 px-5 py-4 border-b border-white/10">
+        <h3 id="video-modal-title" class="font-pixel text-xs sm:text-sm text-white truncate">Video</h3>
+      </div>
+      <div class="video-frame-wrap">
+        <iframe id="video-modal-frame" src="" title="YouTube video player" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen></iframe>
+      </div>
+
+      <!-- Özel Klip Kontrol Barı (YouTube native barı controls=0 ile gizli) -->
+      <div id="custom-player-controls" class="custom-player-controls hidden">
+        <div id="cpc-progress" class="cpc-progress" role="slider" aria-label="Klip ilerlemesi"
+          aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+          <div id="cpc-progress-fill" class="cpc-progress-fill"></div>
+        </div>
+        <div class="cpc-row">
+          <button type="button" id="cpc-play" class="cpc-btn" aria-label="Oynat / Durdur">
+            <i class="fa-solid fa-play"></i>
+          </button>
+          <span id="cpc-time" class="cpc-time">0:00 / 0:00</span>
+          <button type="button" id="cpc-fullscreen" class="cpc-btn cpc-fullscreen" aria-label="Tam Ekran">
+            <i class="fa-solid fa-expand"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= KLİP OLUŞTURMA MODALI ================= -->
+  <div id="clip-modal" class="video-modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="video-modal-backdrop" data-close-clip-modal></div>
+    <div class="video-modal-box modal-form-box">
+      <div class="flex items-center justify-between gap-4 px-5 py-4 border-b border-white/10">
+        <h3 id="clip-modal-title" class="font-pixel text-xs sm:text-sm text-white">
+          <i class="fa-solid fa-scissors text-peach mr-2"></i><span id="clip-modal-title-text">Yeni Klip Oluştur</span>
+        </h3>
+        <button type="button" data-close-clip-modal aria-label="Kapat" class="modal-close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="clip-form" class="clip-form" novalidate>
+        <label for="clip-username">
+          Kullanıcı Adı
+          <input id="clip-username" class="clip-input" type="text" placeholder="Örn: PeachFan42" maxlength="40" required>
+        </label>
+
+        <label for="clip-title">
+          Klip Başlığı
+          <input id="clip-title" class="clip-input" type="text" placeholder="Örn: İkonik kahkaha anı" maxlength="80" required>
+        </label>
+
+        <label for="clip-video">
+          Video URL veya Video ID (YouTube)
+          <input id="clip-video" class="clip-input" type="text"
+            placeholder="youtube.com/watch?v=... / youtu.be/... / yt-video-id" required>
+        </label>
+
+        <div class="clip-form-row">
+          <label for="clip-start">
+            Başlangıç (saniye)
+            <input id="clip-start" class="clip-input" type="number" min="0" step="1" placeholder="0" required>
+          </label>
+          <label for="clip-end">
+            Bitiş (saniye)
+            <input id="clip-end" class="clip-input" type="number" min="1" step="1" placeholder="15" required>
+          </label>
+        </div>
+
+        <p id="clip-form-msg" class="clip-form-msg" role="alert"></p>
+
+        <p id="clip-streamer-note" class="clip-streamer-note" role="status"></p>
+
+        <div class="clip-form-actions">
+          <button type="button" data-close-clip-modal class="btn-control">Vazgeç</button>
+          <button type="submit" id="clip-form-submit" class="btn-primary"><i class="fa-solid fa-paper-plane mr-2"></i><span id="clip-form-submit-label">Klibi Kaydet</span></button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= KONFİGÜRASYON HATASI OVLERLAYI ================= -->
+  <div id="config-error" class="hidden fixed inset-0 z-[100] bg-deep/95 backdrop-blur-md grid place-items-center p-6">
+    <div class="max-w-md w-full text-center pixel-card bg-[#141419] p-8 border border-red-500/30">
+      <div class="text-5xl mb-4"><i class="fa-solid fa-triangle-exclamation text-red-400 animate-pulse"></i></div>
+      <h2 class="font-pixel text-lg text-white mb-3">KONFİGÜRASYON HATASI</h2>
+      <p id="config-error-msg" class="text-white/60 text-sm leading-relaxed mb-5">
+        config.json yüklenemedi.
+      </p>
+      <p class="text-xs text-white/40 font-mono mb-5">Siteyi bir web sunucusu üzerinden çalıştırın (örn. <code class="code-chip">npx serve</code>).</p>
+      <button id="config-error-retry" class="btn-primary"><i class="fa-solid fa-rotate-right mr-2"></i>Tekrar Dene</button>
+    </div>
+  </div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="js/skin-viewer.js"></script>
+  <script src="js/clips.js"></script>
+  <script src="js/video-gallery.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
